@@ -26,7 +26,10 @@ enum planck_layers {
   _LAYER_MEDIA,
   _LAYER_NAVIGATION_ALT,
   _LAYER_ENCODER_CHAR_SELECT,
-  _LAYER_ENCODER_WORD_SELECT
+  _LAYER_ENCODER_WORD_SELECT,
+  _LAYER_ENCODER_LEFT_RIGHT,
+  _LAYER_ENCODER_SCRUB_FINE,
+  _LAYER_ENCODER_UNDO
 };
 
 // Tap Dance declarations
@@ -48,8 +51,8 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   [_LAYER_BASE] = LAYOUT_planck_1x2uC(
     LT(1,KC_ESC), KC_Q, KC_W, LT(6,KC_E), KC_R, KC_T, KC_Y, KC_U, KC_I, KC_O, KC_P, KC_BSPC,
     LT(2,KC_TAB), LT(1,KC_A), LT(4,KC_S), LT(2,KC_D), LT(3,KC_F), KC_G, KC_H, LT(7,KC_J), LT(8,KC_K), KC_L, KC_SCLN, KC_QUOT,
-    KC_BTN5, KC_Z, KC_X, KC_C, KC_V, KC_B, KC_N, LT(5,KC_M), KC_COMM, KC_DOT, KC_SLSH, KC_ENT,
-    KC_BTN4, TD(TD_CNTL_E), TD(TD_ALT_F4), KC_APP, TD(TD_CNTL_ALT_DEL), KC_SPC, KC_RSFT, KC_HOME, KC_END, KC_WH_U, KC_WH_D
+    KC_BTN5, KC_Z, KC_X, KC_C, KC_V, KC_B, KC_N, LT(5,KC_M), LT(9,KC_COMM), LT(10,KC_DOT), KC_SLSH, KC_ENT,
+    KC_BTN4, TD(TD_CNTL_E), TD(TD_ALT_F4), KC_APP, TD(TD_CNTL_ALT_DEL), KC_SPC, KC_RSFT, KC_HOME, KC_END, RGUI(RSFT(KC_S)), LT(11,KC_DELETE)
   ),
 
   [_LAYER_ARITHMETIC] = LAYOUT_planck_1x2uC(
@@ -60,10 +63,10 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   ),
 
   [_LAYER_NAVIGATION] = LAYOUT_planck_1x2uC(
-    KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_UP, KC_NO, KC_NO, KC_INS,
-    KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_LEFT, KC_DOWN, KC_RGHT, KC_NO, KC_DEL,
-    KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_UP, KC_NO,
-    KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_HOME, KC_END, KC_LEFT, KC_DOWN, KC_RGHT
+    KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_UP, KC_NO, KC_NO, KC_DEL,
+    KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_LEFT, KC_DOWN, KC_RGHT, KC_NO, KC_NO,
+    KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_HOME, KC_END, KC_UP, KC_NO,
+    KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_LEFT, KC_DOWN, KC_RGHT
   ),
 
   [_LAYER_FUNCTION_KEY] = LAYOUT_planck_1x2uC(
@@ -93,20 +96,6 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO,
     KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO
   ),
-
-  [_LAYER_ENCODER_CHAR_SELECT] = LAYOUT_planck_1x2uC(
-    KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO,
-    KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO,
-    KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO,
-    KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO
-  ),
-
-  [_LAYER_ENCODER_WORD_SELECT] = LAYOUT_planck_1x2uC(
-    KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO,
-    KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO,
-    KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO,
-    KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO
-  )
 };
 
 void encoder_update(bool clockwise) {
@@ -137,6 +126,29 @@ void encoder_update(bool clockwise) {
       tap_code16(C(S(KC_RIGHT)));
     } else {
       tap_code16(C(S(KC_LEFT)));
+    }
+  }
+  else if (IS_LAYER_ON(_LAYER_ENCODER_LEFT_RIGHT)) {
+    if (clockwise) {
+      tap_code(KC_RIGHT);
+    }
+    else {
+      tap_code(KC_LEFT);
+    }
+  }
+  else if (IS_LAYER_ON(_LAYER_ENCODER_SCRUB_FINE)) {
+    if (clockwise) {
+      tap_code(KC_DOT);
+    } else {
+      tap_code(KC_COMMA);
+    }
+  }
+  else if (IS_LAYER_ON(_LAYER_ENCODER_UNDO)) {
+    if (clockwise) {
+      tap_code16(C(S(KC_Z)));
+    }
+    else {
+      tap_code16(C(KC_Z));
     }
   }
   else {
