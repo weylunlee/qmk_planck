@@ -24,13 +24,7 @@ enum planck_layers {
   _LAYER_FUNCTION_KEY,
   _LAYER_SYMBOL,
   _LAYER_MEDIA,
-  _LAYER_BRACKETS,
-  _LAYER_ENCODER_CHAR_SELECT,
-  _LAYER_ENCODER_WORD_SELECT,
-  _LAYER_ENCODER_LEFT_RIGHT,
-  _LAYER_ENCODER_SCRUB_FINE,
-  _LAYER_ENCODER_UNDO,
-  _LAYER_ENCODER_UP_DOWN
+  _LAYER_BRACKETS
 };
 
 // Tap Dance declarations
@@ -50,9 +44,9 @@ qk_tap_dance_action_t tap_dance_actions[] = {
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   [_LAYER_BASE] = LAYOUT_planck_1x2uC(
     LT(_LAYER_MEDIA,KC_ESC), KC_Q, KC_W, KC_E, KC_R, KC_T, KC_Y, KC_U, KC_I, KC_O, KC_P, KC_BSPC,
-    LT(2,KC_TAB), LT(_LAYER_ARITHMETIC,KC_A), LT(_LAYER_SYMBOL,KC_S), LT(_LAYER_NAVIGATION,KC_D), LT(_LAYER_FUNCTION_KEY,KC_F), KC_G, KC_H, LT(_LAYER_ENCODER_CHAR_SELECT,KC_J), LT(_LAYER_ENCODER_WORD_SELECT,KC_K), KC_L, KC_SCLN, KC_QUOT,
-    KC_BTN5, KC_Z, KC_X, KC_C, KC_V, LT(_LAYER_BRACKETS,KC_B), KC_N, LT(_LAYER_MEDIA,KC_M), LT(_LAYER_ENCODER_LEFT_RIGHT,KC_COMM), LT(_LAYER_ENCODER_SCRUB_FINE,KC_DOT), KC_SLSH, KC_ENT,
-    KC_BTN4, TD(TD_CNTL_E), TD(TD_ALT_F4), KC_APP, TD(TD_CNTL_ALT_DEL), KC_SPC, KC_RSFT, LT(_LAYER_ENCODER_UP_DOWN,KC_HOME), KC_END, RGUI(RSFT(KC_S)), LT(_LAYER_ENCODER_UNDO,KC_DEL)
+    KC_TAB, LT(_LAYER_ARITHMETIC,KC_A), LT(_LAYER_SYMBOL,KC_S), LT(_LAYER_NAVIGATION,KC_D), LT(_LAYER_FUNCTION_KEY,KC_F), KC_G, KC_H, KC_J, KC_K, KC_L, KC_SCLN, KC_QUOT,
+    KC_BTN5, KC_Z, KC_X, KC_C, KC_V, LT(_LAYER_BRACKETS,KC_B), KC_N, KC_M, KC_COMM, KC_DOT, KC_SLSH, KC_ENT,
+    KC_BTN4, TD(TD_CNTL_E), TD(TD_ALT_F4), KC_APP, TD(TD_CNTL_ALT_DEL), KC_SPC, KC_RSFT, KC_HOME, KC_END, RGUI(RSFT(KC_S)), KC_DEL
   ),
 
   [_LAYER_ARITHMETIC] = LAYOUT_planck_1x2uC(
@@ -97,33 +91,3 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_DEL
   ),
 };
-
-void encoder_update(bool clockwise) {
-  if (IS_LAYER_ON(_LAYER_MEDIA)) {
-    tap_code(clockwise ? KC_VOLU : KC_VOLD);
-  }
-  else if (IS_LAYER_ON(_LAYER_ENCODER_CHAR_SELECT)) {
-    tap_code16(clockwise ? S(KC_RIGHT) : S(KC_LEFT));
-  }
-  else if (IS_LAYER_ON(_LAYER_ENCODER_WORD_SELECT)) {
-    tap_code16(clockwise ? C(S(KC_RIGHT)) : C(S(KC_LEFT)));
-  }
-  else if (IS_LAYER_ON(_LAYER_ENCODER_LEFT_RIGHT)) {
-    tap_code(clockwise ? KC_RIGHT : KC_LEFT);
-  }
-  else if (IS_LAYER_ON(_LAYER_ENCODER_SCRUB_FINE)) {
-    tap_code(clockwise ? KC_DOT : KC_COMMA);
-  }
-  else if (IS_LAYER_ON(_LAYER_ENCODER_UNDO)) {
-    tap_code16(clockwise ? C(S(KC_Z)) : C(KC_Z));
-  }
-  else if (IS_LAYER_ON(_LAYER_ENCODER_UP_DOWN)) {
-    tap_code(clockwise ? KC_UP : KC_DOWN);
-  }
-  else if (IS_LAYER_ON(_LAYER_FUNCTION_KEY)) {
-    tap_code(clockwise ? KC_MNXT : KC_MPRV);
-  }
-  else {
-    tap_code(clockwise ? KC_PGDN : KC_PGUP);
-  }
-}
